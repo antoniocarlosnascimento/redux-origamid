@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="./immer.umd.production.min.js"></script>
+    <script src="./redux.min.js"></script>
+</head>
+<body>
+    <h1 id="alunos"></h1>
+    <h1 id="aulas"></h1>
+
+    <div style="margin-bottom: 10px">
+        <button id="btn-incrementar-tempo">Inclementar Tempo</button>
+        <button id="btn-reduzir-tempo">Reduzir Tempo</button>
+    </div>
+    
+
+    <div style="margin-bottom: 10px">
+        <input type="text" id="input-email" placeholder="email@email.com">
+        <button id="btn-alterar-email">Alterar Email</button>
+    </div>
+
+    <div style="margin-bottom: 10px">
+        <input type="number" id="input-completar-aula" placeholder="digite o id da aula">
+        <button id="btn-completar-aula">Completar aula</button>
+    </div>
+
+
+    <script type="module">
+        import store from './store/configureStore.js';
+        import {incrementarTempo, reduzirTempo, modificarEmail} from './store/aluno.js';
+        import {completarAula, completarCurso, resetarCurso} from './store/aulas.js';
+
+        const selectId = (element) => document.getElementById(element);
+
+        const render = ()=> {
+            // const state = store.getState();
+            const { aluno, aulas } = store.getState();
+            
+            const aulasElement = document.getElementById('aulas');
+            const alunoElement = document.getElementById('alunos');
+
+            alunoElement.innerText = `${aluno.nome} : ${aluno.email} : ${aluno.diasRestantes}`;
+            aulasElement.innerText = `${aulas.filter((aula) => aula.completa).length} aula(s) completa(s)`;
+        }
+        render()
+
+        store.subscribe(render);
+        selectId('btn-incrementar-tempo').addEventListener('click', () => store.dispatch(incrementarTempo()));
+        selectId('btn-reduzir-tempo').addEventListener('click', () => store.dispatch(reduzirTempo()));
+
+        selectId('btn-alterar-email').addEventListener('click', () => {
+            store.dispatch(modificarEmail(selectId('input-email').value));
+            selectId('input-email').value = '';
+        })
+
+        selectId('btn-completar-aula').addEventListener('click', () => {
+            store.dispatch(completarAula(selectId('input-email').value));
+            selectId('input-completar-aula').value = '';
+            render();
+        })
+
+        
+    </script>
+</body>
+</html>

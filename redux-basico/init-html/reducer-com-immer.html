@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BT">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #caixa {
+            background: blue;
+            height: 50px;
+            width: 10px;
+        }
+    </style>
+    <script src="./immer.umd.production.min.js"></script>
+    <script src="./redux.min.js"></script>
+</head>
+<body>
+
+    
+    <script>    
+
+        // Uso do immer 
+        const obj1 = {
+            nome: 'José',
+            idade: 50
+        }
+
+        const obj2 = immer.produce(obj1, (draft) => {
+            draft.nome = 'João';
+            draft.idade = 35;
+        });
+
+        console.log(obj1)
+        console.log(obj2)
+
+        const initialState = {
+            nome: 'Antonio Carlos',
+            sobre: {
+                dados: {
+                    idade: 31,
+                }
+            },
+        }
+        
+        const reducer = immer.produce((state, action) => {
+            switch (action.type) {
+                case 'MUDAR_NOME':
+                    // Com immer não precisa fazer o return ele faz isso automaticamente
+                    state.nome = action.payload
+                break;
+                case 'MUDAR_IDADE':
+                    // Com immer não precisa fazer o return ele faz isso automaticamente
+                    state.sobre.dados.idade = action.payload
+                break;
+            
+                // Com immer pode remover o default
+            }
+        }, initialState);
+
+        const store = Redux.createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
+        store.dispatch({ type: 'MUDAR_NOME',  payload: 'Maria'});
+        store.dispatch({ type: 'MUDAR_NOME',  payload: 'João'});
+        store.dispatch({ type: 'MUDAR_NOME',  payload: 'Pedro'});
+
+        store.dispatch({ type: 'MUDAR_IDADE',  payload:  100 });
+        store.dispatch({ type: 'MUDAR_IDADE',  payload: 25 });
+        store.dispatch({ type: 'MUDAR_IDADE',  payload: 40 });
+    </script>
+
+</body>
+</html>
